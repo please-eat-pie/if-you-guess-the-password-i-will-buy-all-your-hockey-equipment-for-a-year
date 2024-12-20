@@ -1,43 +1,94 @@
-/* Basic Reset */
+/* General Reset and Body Styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Global Styles */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
-  color: #333;
-  text-align: center;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
   padding: 20px;
 }
 
+/* Game Container */
+#game-container {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  text-align: center;
+  font-size: 1rem;
+}
+
 h1 {
-  font-size: 2.5rem;
+  font-size: 2rem;
+  color: #333;
   margin-bottom: 20px;
 }
 
-p {
-  font-size: 1.2rem;
-  margin: 10px 0;
+/* Difficulty Buttons */
+#difficulty-selection {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
 }
 
-button {
+.difficulty-btn {
   background-color: #007bff;
   color: white;
-  padding: 10px 20px;
-  margin: 10px;
   border: none;
   border-radius: 5px;
+  padding: 10px 20px;
   cursor: pointer;
   font-size: 1rem;
   transition: background-color 0.3s;
 }
 
-button:hover {
+.difficulty-btn:hover {
   background-color: #0056b3;
+}
+
+/* Game Play */
+#game-play {
+  display: none;
+}
+
+#game-play.hidden {
+  display: none;
+}
+
+input[type="text"] {
+  width: 80%;
+  padding: 10px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  text-align: center;
+}
+
+button#submit-guess {
+  width: 80%;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s;
+}
+
+button#submit-guess:hover {
+  background-color: #218838;
 }
 
 button:disabled {
@@ -45,42 +96,20 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.difficulty-btn {
-  font-size: 1.1rem;
-}
-
-.hidden {
-  display: none;
-}
-
-#game-play {
-  margin-top: 30px;
-}
-
-#guess {
-  padding: 10px;
-  font-size: 1.2rem;
-  margin-top: 10px;
-  width: 250px;
-  max-width: 100%;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-}
-
-#submit-guess {
-  margin-top: 20px;
-  padding: 10px 30px;
-}
-
-#attempts {
-  margin-top: 20px;
+/* Message and Attempts */
+#attempts, #message {
+  margin-top: 15px;
   font-size: 1rem;
-  color: #6c757d;
+  font-weight: bold;
 }
 
 #message {
-  margin-top: 20px;
-  font-size: 1.2rem;
-  font-weight: bold;
   color: #dc3545;
 }
+
+#attempts {
+  color: #007bff;
+}
+
+#message.success {
+  
