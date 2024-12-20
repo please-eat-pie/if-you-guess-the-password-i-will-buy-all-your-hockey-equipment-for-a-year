@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {  // Wait for the DOM to load before attaching event listeners
+document.addEventListener('DOMContentLoaded', () => {
   const difficultyLevels = {
     easy: { length: 4, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' },
     medium: { length: 6, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()' },
@@ -28,4 +28,47 @@ document.addEventListener('DOMContentLoaded', () => {  // Wait for the DOM to lo
     // Show game play UI and hide the difficulty selection
     document.getElementById('difficulty-selection').classList.add('hidden');
     document.getElementById('game-play').classList.remove('hidden');
-    document.getE
+    document.getElementById('hint').textContent = `Guess the ${settings.length}-character password!`;
+    document.getElementById('attempts').textContent = `Attempts left: ${maxAttempts - attempts}`;
+    document.getElementById('message').textContent = '';
+
+    document.getElementById('submit-guess').disabled = false;
+    document.getElementById('guess').value = '';
+  }
+
+  function generatePassword(length, characters) {
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      password += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return password;
+  }
+
+  document.getElementById('submit-guess').addEventListener('click', () => {
+    const guess = document.getElementById('guess').value.trim().toUpperCase();
+
+    if (guess.length !== password.length) {
+      showMessage('Your guess must be ' + password.length + ' characters long!', 'warning');
+      return;
+    }
+
+    attempts++;
+    if (guess === password) {
+      showMessage('Congratulations! You guessed the password!', 'success');
+      document.getElementById('submit-guess').disabled = true;
+    } else if (attempts >= maxAttempts) {
+      showMessage(`Sorry! You've used all ${maxAttempts} attempts. The correct password was "${password}"`, 'error');
+      document.getElementById('submit-guess').disabled = true;
+    } else {
+      document.getElementById('attempts').textContent = `Attempts left: ${maxAttempts - attempts}`;
+      showMessage('Incorrect guess, try again!', 'error');
+    }
+  });
+
+  function showMessage(message, type) {
+    const messageElement = document.getElementById('message');
+    messageElement.textContent = message;
+    messageElement.style.color = type === 'success' ? '#28a745' : type === 'warning' ? '#ffc107' : '#dc3545';
+  }
+});
+
