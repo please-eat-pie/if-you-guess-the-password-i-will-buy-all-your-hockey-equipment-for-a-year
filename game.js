@@ -1,107 +1,71 @@
-// List of possible characters to use in the password
-const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?/\\`~-= ";
-let password = "";
+const difficultyLevels = {
+  easy: { length: 4, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' },
+  medium: { length: 6, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()' },
+  hard: { length: 8, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-' },
+  'very-hard': { length: 10, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-/.,:;<>?' },
+  insane: { length: 12, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-/.,:;<>?{}[]' }
+};
+
+let password = '';
 let attempts = 0;
 let maxAttempts = 10;
-let guessHistory = [];
+let currentDifficulty = 'easy';
 
-// Difficulty levels
-const difficultyLevels = {
-  1: { length: 6, maxAttempts: 15 },
-  2: { length: 8, maxAttempts: 10 },
-  3: { length: 10, maxAttempts: 7 },
-};
+document.querySelectorAll('.difficulty-btn').forEach(button => {
+  button.addEventListener('click', (e) => {
+    currentDifficulty = e.target.dataset.difficulty;
+    startGame(currentDifficulty);
+  });
+});
 
-// Function to generate a random password
-function generatePassword(length) {
-  let generatedPassword = '';
-  for (let i = 0; i < length; i++) {
-    generatedPassword += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return generatedPassword;
-}
-
-// Function to update the game based on the selected difficulty
-function updateGame() {
-  const difficulty = document.getElementById("difficulty").value;
-  const selectedDifficulty = difficultyLevels[difficulty];
-  
-  password = generatePassword(selectedDifficulty.length);
-  maxAttempts = selectedDifficulty.maxAttempts;
+function startGame(difficulty) {
+  // Select difficulty settings
+  const settings = difficultyLevels[difficulty];
+  password = generatePassword(settings.length, settings.characters);
   attempts = 0;
-  guessHistory = [];
-  
-  // Clear previous guesses and messages
-  document.getElementById("message").textContent = "";
-  document.getElementById("guess").value = "";
-  document.getElementById("game-board").innerHTML = '';
-  
-  // Display empty game board
-  for (let i = 0; i < maxAttempts; i++) {
-    let row = document.createElement('div');
-    row.classList.add('game-row');
-    for (let j = 0; j < selectedDifficulty.length; j++) {
-      let cell = document.createElement('div');
-      cell.classList.add('cell');
-      row.appendChild(cell);
-    }
-    document.getElementById("game-board").appendChild(row);
-  }
 
-  console.log("Password for debugging (don't show this in production):", password);
+  // Show game play UI and hide the difficulty selection
+  document.getElementById('difficulty-selection').classList.add('hidden');
+  document.getElementById('game-play').classList.remove('hidden');
+  document.getElementById('hint').textContent = `Guess the ${settings.length}-character password!`;
+  document.getElementById('attempts').textContent = `Attempts left: ${maxAttempts - attempts}`;
+  document.getElementById('message').textContent = '';
+
+  document.getElementById('submit-guess').disabled = false;
+  document.getElementById('guess').value = '';
 }
 
-// Function to check the user's guess
-function checkGuess() {
-  const userGuess = document.getElementById("guess").value;
-  if (userGuess.length !== password.length) {
-    document.getElementById("message").textContent = `Please enter exactly ${password.length} characters.`;
+function generatePassword(length, characters) {
+  let password = '';
+  for (let i = 0; i < length; i++) {
+    password += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return password;
+}
+
+document.getElementById('submit-guess').addEventListener('click', () => {
+  const guess = document.getElementById('guess').value.trim().toUpperCase();
+
+  if (guess.length !== password.length) {
+    showMessage('Your guess must be ' + password.length + ' characters long!', 'warning');
     return;
   }
 
-  // Update guess history
-  guessHistory.push(userGuess);
   attempts++;
-
-  // Determine feedback for the guess
-  let feedback = [];
-  for (let i = 0; i < userGuess.length; i++) {
-    if (userGuess[i] === password[i]) {
-      feedback.push('correct');
-    } else if (password.includes(userGuess[i])) {
-      feedback.push('wrong-position');
-    } else {
-      feedback.push('incorrect');
-    }
+  if (guess === password) {
+    showMessage('Congratulations! You guessed the password!', 'success');
+    document.getElementById('submit-guess').disabled = true;
+  } else if (attempts >= maxAttempts) {
+    showMessage(`Sorry! You've used all ${maxAttempts} attempts. The correct password was "${password}"`, 'error');
+    document.getElementById('submit-guess').disabled = true;
+  } else {
+    document.getElementById('attempts').textContent = `Attempts left: ${maxAttempts - attempts}`;
+    showMessage('Incorrect guess, try again!', 'error');
   }
+});
 
-  // Update game board with feedback
-  updateGameBoard(guessHistory.length - 1, feedback);
-
-  if (userGuess === password) {
-    document.getElementById("message").textContent = `Congratulations! You guessed the password correctly!`;
-    return;
-  }
-
-  if (attempts >= maxAttempts) {
-    document.getElementById("message").textContent = `Sorry, you've run out of attempts! The correct password was: ${password}`;
-  }
+function showMessage(message, type) {
+  const messageElement = document.getElementById('message');
+  messageElement.textContent = message;
+  messageElement.style.color = type === 'success' ? '#28a745' : type === 'warning' ? '#ffc107' : '#dc3545';
 }
-
-// Function to update the game board with feedback
-function updateGameBoard(rowIndex, feedback) {
-  const gameBoard = document.getElementById("game-board");
-  const row = gameBoard.children[rowIndex];
-  
-  for (let i = 0; i < feedback.length; i++) {
-    const cell = row.children[i];
-    cell.classList.add(feedback[i]);
-    cell.textContent = guessHistory[rowIndex][i];
-  }
-}
-
-// Initialize the game when the page loads
-window.onload = function() {
-  updateGame();
-  document.getElementById("difficulty").addEventListener("change", updateGame);
-};
