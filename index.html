@@ -18,7 +18,9 @@
       let attempts = 0;
       let maxAttempts = 10;
       let currentDifficulty = 'easy';
-
+      let timerInterval;
+      let startTime;
+      
       // Difficulty buttons
       document.querySelectorAll('.difficulty-btn').forEach(button => {
         button.addEventListener('click', function(e) {
@@ -32,6 +34,7 @@
         const settings = difficultyLevels[difficulty];
         password = generatePassword(settings.length, settings.characters);
         attempts = 0;
+        startTime = new Date();  // Start the timer
 
         // Hide difficulty selection and show the game
         document.getElementById('difficulty-selection').style.display = 'none';
@@ -39,6 +42,9 @@
         document.getElementById('hint').textContent = `Guess the ${settings.length}-character password!`;
         document.getElementById('attempts').textContent = `Attempts left: ${maxAttempts - attempts}`;
         document.getElementById('message').textContent = '';
+
+        // Start the timer
+        timerInterval = setInterval(updateTimer, 1000); // Update every second
 
         document.getElementById('submit-guess').disabled = false;
         document.getElementById('guess').value = '';
@@ -65,9 +71,11 @@
         attempts++;
         if (guess === password) {
           showMessage('Congratulations! You guessed the password!', 'success');
+          clearInterval(timerInterval); // Stop the timer when the game ends
           document.getElementById('submit-guess').disabled = true;
         } else if (attempts >= maxAttempts) {
           showMessage(`Sorry! You've used all ${maxAttempts} attempts. The correct password was "${password}"`, 'error');
+          clearInterval(timerInterval); // Stop the timer when the game ends
           document.getElementById('submit-guess').disabled = true;
         } else {
           document.getElementById('attempts').textContent = `Attempts left: ${maxAttempts - attempts}`;
@@ -107,6 +115,21 @@
           messageElement.style.color = '#dc3545';
         }
       }
+
+      // Timer function to update time elapsed
+      function updateTimer() {
+        const currentTime = new Date();
+        const timeElapsed = Math.floor((currentTime - startTime) / 1000); // Time in seconds
+
+        document.getElementById('timer').textContent = `Time: ${formatTime(timeElapsed)}`;
+      }
+
+      // Format time into minutes:seconds format
+      function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+      }
     });
   </script>
 </head>
@@ -131,9 +154,11 @@
       <input type="text" id="guess" placeholder="Enter your guess" maxlength="12" style="padding: 10px; width: 80%; margin-top: 20px; border-radius: 5px; border: 1px solid #ddd;">
       <button id="submit-guess" style="background-color: #28a745; color: white; padding: 10px 20px; width: 80%; border: none; border-radius: 5px; cursor: pointer;">Submit Guess</button>
       <div id="attempts" style="margin-top: 20px;"></div>
+      <div id="timer" style="margin-top: 20px; font-weight: bold;"></div>
       <div id="message" style="margin-top: 20px; font-weight: bold;"></div>
     </div>
   </div>
 
 </body>
 </html>
+
