@@ -71,9 +71,28 @@
           document.getElementById('submit-guess').disabled = true;
         } else {
           document.getElementById('attempts').textContent = `Attempts left: ${maxAttempts - attempts}`;
-          showMessage('Incorrect guess, try again!', 'error');
+          giveFeedback(guess);  // Show feedback on individual letters
         }
       });
+
+      // Give feedback on each letter in the guess
+      function giveFeedback(guess) {
+        let feedbackMessage = 'Incorrect guess, try again!';
+        let correctLetters = [];
+
+        // Check which letters are correct and in the right position
+        for (let i = 0; i < guess.length; i++) {
+          if (guess[i] === password[i]) {
+            correctLetters.push(guess[i]);
+          }
+        }
+
+        if (correctLetters.length > 0) {
+          feedbackMessage = `You guessed ${correctLetters.length} correct letter(s): ${correctLetters.join(', ')}`;
+        }
+
+        showMessage(feedbackMessage, 'error');
+      }
 
       // Show message with different styles
       function showMessage(message, type) {
