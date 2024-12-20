@@ -1,71 +1,86 @@
-const difficultyLevels = {
-  easy: { length: 4, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' },
-  medium: { length: 6, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()' },
-  hard: { length: 8, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-' },
-  'very-hard': { length: 10, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-/.,:;<>?' },
-  insane: { length: 12, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-/.,:;<>?{}[]' }
-};
-
-let password = '';
-let attempts = 0;
-let maxAttempts = 10;
-let currentDifficulty = 'easy';
-
-document.querySelectorAll('.difficulty-btn').forEach(button => {
-  button.addEventListener('click', (e) => {
-    currentDifficulty = e.target.dataset.difficulty;
-    startGame(currentDifficulty);
-  });
-});
-
-function startGame(difficulty) {
-  // Select difficulty settings
-  const settings = difficultyLevels[difficulty];
-  password = generatePassword(settings.length, settings.characters);
-  attempts = 0;
-
-  // Show game play UI and hide the difficulty selection
-  document.getElementById('difficulty-selection').classList.add('hidden');
-  document.getElementById('game-play').classList.remove('hidden');
-  document.getElementById('hint').textContent = `Guess the ${settings.length}-character password!`;
-  document.getElementById('attempts').textContent = `Attempts left: ${maxAttempts - attempts}`;
-  document.getElementById('message').textContent = '';
-
-  document.getElementById('submit-guess').disabled = false;
-  document.getElementById('guess').value = '';
+/* Basic Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-function generatePassword(length, characters) {
-  let password = '';
-  for (let i = 0; i < length; i++) {
-    password += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return password;
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  text-align: center;
+  padding: 20px;
 }
 
-document.getElementById('submit-guess').addEventListener('click', () => {
-  const guess = document.getElementById('guess').value.trim().toUpperCase();
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
 
-  if (guess.length !== password.length) {
-    showMessage('Your guess must be ' + password.length + ' characters long!', 'warning');
-    return;
-  }
+p {
+  font-size: 1.2rem;
+  margin: 10px 0;
+}
 
-  attempts++;
-  if (guess === password) {
-    showMessage('Congratulations! You guessed the password!', 'success');
-    document.getElementById('submit-guess').disabled = true;
-  } else if (attempts >= maxAttempts) {
-    showMessage(`Sorry! You've used all ${maxAttempts} attempts. The correct password was "${password}"`, 'error');
-    document.getElementById('submit-guess').disabled = true;
-  } else {
-    document.getElementById('attempts').textContent = `Attempts left: ${maxAttempts - attempts}`;
-    showMessage('Incorrect guess, try again!', 'error');
-  }
-});
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
 
-function showMessage(message, type) {
-  const messageElement = document.getElementById('message');
-  messageElement.textContent = message;
-  messageElement.style.color = type === 'success' ? '#28a745' : type === 'warning' ? '#ffc107' : '#dc3545';
+button:hover {
+  background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.difficulty-btn {
+  font-size: 1.1rem;
+}
+
+.hidden {
+  display: none;
+}
+
+#game-play {
+  margin-top: 30px;
+}
+
+#guess {
+  padding: 10px;
+  font-size: 1.2rem;
+  margin-top: 10px;
+  width: 250px;
+  max-width: 100%;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+#submit-guess {
+  margin-top: 20px;
+  padding: 10px 30px;
+}
+
+#attempts {
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+#message {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #dc3545;
 }
