@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Password Guessing Game</title>
-  <script defer>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Difficulty settings
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
       const difficultyLevels = {
         easy: { length: 4, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' },
         medium: { length: 6, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()' },
@@ -20,21 +19,21 @@
       let maxAttempts = 10;
       let currentDifficulty = 'easy';
 
-      // Handle difficulty selection
+      // Difficulty buttons
       document.querySelectorAll('.difficulty-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
+        button.addEventListener('click', function(e) {
           currentDifficulty = e.target.dataset.difficulty;
           startGame(currentDifficulty);
         });
       });
 
-      // Start the game
+      // Start the game with selected difficulty
       function startGame(difficulty) {
         const settings = difficultyLevels[difficulty];
         password = generatePassword(settings.length, settings.characters);
         attempts = 0;
 
-        // Show game UI and hide difficulty selection
+        // Hide difficulty selection and show the game
         document.getElementById('difficulty-selection').style.display = 'none';
         document.getElementById('game-play').style.display = 'block';
         document.getElementById('hint').textContent = `Guess the ${settings.length}-character password!`;
@@ -45,7 +44,7 @@
         document.getElementById('guess').value = '';
       }
 
-      // Generate random password
+      // Generate a random password
       function generatePassword(length, characters) {
         let password = '';
         for (let i = 0; i < length; i++) {
@@ -55,11 +54,11 @@
       }
 
       // Handle guess submission
-      document.getElementById('submit-guess').addEventListener('click', () => {
+      document.getElementById('submit-guess').addEventListener('click', function() {
         const guess = document.getElementById('guess').value.trim().toUpperCase();
 
         if (guess.length !== password.length) {
-          showMessage('Your guess must be ' + password.length + ' characters long!', 'warning');
+          showMessage(`Your guess must be ${password.length} characters long!`, 'warning');
           return;
         }
 
@@ -76,10 +75,11 @@
         }
       });
 
-      // Show messages with different types (success, error, etc.)
+      // Show message with different styles
       function showMessage(message, type) {
         const messageElement = document.getElementById('message');
         messageElement.textContent = message;
+
         if (type === 'success') {
           messageElement.style.color = '#28a745';
         } else if (type === 'warning') {
