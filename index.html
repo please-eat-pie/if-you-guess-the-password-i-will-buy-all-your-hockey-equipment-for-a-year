@@ -4,34 +4,117 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Password Guessing Game</title>
-  <link href="styles.css">
-</head>
-<body>
+  <script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Difficulty settings
+      const difficultyLevels = {
+        easy: { length: 4, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' },
+        medium: { length: 6, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()' },
+        hard: { length: 8, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-' },
+        'very-hard': { length: 10, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-/.,:;<>?' },
+        insane: { length: 12, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-/.,:;<>?{}[]' }
+      };
 
-  <div id="game-container">
-    <h1>Password Guessing Game</h1>
+      let password = '';
+      let attempts = 0;
+      let maxAttempts = 10;
+      let currentDifficulty = 'easy';
+
+      // Handle difficulty selection
+      document.querySelectorAll('.difficulty-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+          currentDifficulty = e.target.dataset.difficulty;
+          startGame(currentDifficulty);
+        });
+      });
+
+      // Start the game
+      function startGame(difficulty) {
+        const settings = difficultyLevels[difficulty];
+        password = generatePassword(settings.length, settings.characters);
+        attempts = 0;
+
+        // Show game UI and hide difficulty selection
+        document.getElementById('difficulty-selection').style.display = 'none';
+        document.getElementById('game-play').style.display = 'block';
+        document.getElementById('hint').textContent = `Guess the ${settings.length}-character password!`;
+        document.getElementById('attempts').textContent = `Attempts left: ${maxAttempts - attempts}`;
+        document.getElementById('message').textContent = '';
+
+        document.getElementById('submit-guess').disabled = false;
+        document.getElementById('guess').value = '';
+      }
+
+      // Generate random password
+      function generatePassword(length, characters) {
+        let password = '';
+        for (let i = 0; i < length; i++) {
+          password += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return password;
+      }
+
+      // Handle guess submission
+      document.getElementById('submit-guess').addEventListener('click', () => {
+        const guess = document.getElementById('guess').value.trim().toUpperCase();
+
+        if (guess.length !== password.length) {
+          showMessage('Your guess must be ' + password.length + ' characters long!', 'warning');
+          return;
+        }
+
+        attempts++;
+        if (guess === password) {
+          showMessage('Congratulations! You guessed the password!', 'success');
+          document.getElementById('submit-guess').disabled = true;
+        } else if (attempts >= maxAttempts) {
+          showMessage(`Sorry! You've used all ${maxAttempts} attempts. The correct password was "${password}"`, 'error');
+          document.getElementById('submit-guess').disabled = true;
+        } else {
+          document.getElementById('attempts').textContent = `Attempts left: ${maxAttempts - attempts}`;
+          showMessage('Incorrect guess, try again!', 'error');
+        }
+      });
+
+      // Show messages with different types (success, error, etc.)
+      function showMessage(message, type) {
+        const messageElement = document.getElementById('message');
+        messageElement.textContent = message;
+        if (type === 'success') {
+          messageElement.style.color = '#28a745';
+        } else if (type === 'warning') {
+          messageElement.style.color = '#ffc107';
+        } else {
+          messageElement.style.color = '#dc3545';
+        }
+      }
+    });
+  </script>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; padding: 20px;">
+
+  <div style="background-color: #fff; padding: 30px; border-radius: 10px; text-align: center; width: 100%; max-width: 400px;">
+    <h1 style="font-size: 2rem; color: #333;">Password Guessing Game</h1>
     <p>Select Difficulty Level:</p>
+
+    <!-- Difficulty Buttons -->
     <div id="difficulty-selection">
-      <button class="difficulty-btn" data-difficulty="easy">Easy</button>
-      <button class="difficulty-btn" data-difficulty="medium">Medium</button>
-      <button class="difficulty-btn" data-difficulty="hard">Hard</button>
-      <button class="difficulty-btn" data-difficulty="very-hard">Very Hard</button>
-      <button class="difficulty-btn" data-difficulty="insane">Insane</button>
+      <button class="difficulty-btn" data-difficulty="easy" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Easy</button>
+      <button class="difficulty-btn" data-difficulty="medium" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Medium</button>
+      <button class="difficulty-btn" data-difficulty="hard" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Hard</button>
+      <button class="difficulty-btn" data-difficulty="very-hard" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Very Hard</button>
+      <button class="difficulty-btn" data-difficulty="insane" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Insane</button>
     </div>
     
-    <div id="game-play" class="hidden">
-      <div id="hint-container">
-        <p id="hint">Guess the password:</p>
-      </div>
-
-      <input type="text" id="guess" placeholder="Enter your guess" maxlength="12" />
-      <button id="submit-guess">Submit Guess</button>
-      
-      <div id="attempts"></div>
-      <div id="message"></div>
+    <!-- Game Play Section -->
+    <div id="game-play" style="display: none;">
+      <p id="hint">Guess the password:</p>
+      <input type="text" id="guess" placeholder="Enter your guess" maxlength="12" style="padding: 10px; width: 80%; margin-top: 20px; border-radius: 5px; border: 1px solid #ddd;">
+      <button id="submit-guess" style="background-color: #28a745; color: white; padding: 10px 20px; width: 80%; border: none; border-radius: 5px; cursor: pointer;">Submit Guess</button>
+      <div id="attempts" style="margin-top: 20px;"></div>
+      <div id="message" style="margin-top: 20px; font-weight: bold;"></div>
     </div>
   </div>
-  
-  <script src="script.js" defer></script>
+
 </body>
 </html>
