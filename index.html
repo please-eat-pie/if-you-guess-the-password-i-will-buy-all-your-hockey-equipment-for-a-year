@@ -1,115 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Guessing Game</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f7f7f7;
-            margin: 0;
-        }
-        .game-container {
-            text-align: center;
-            border: 2px solid #ccc;
-            padding: 20px;
-            background-color: white;
-            border-radius: 10px;
-            width: 300px;
-        }
-        input[type="text"] {
-            padding: 10px;
-            font-size: 16px;
-            width: 80%;
-            margin: 10px 0;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-        }
-        button:disabled {
-            background-color: #ddd;
-            cursor: not-allowed;
-        }
-        .message {
-            font-size: 18px;
-            margin-top: 20px;
-        }
-        .incorrect {
-            color: red;
-        }
-        .correct {
-            color: green;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Guessing Game</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+    input { padding: 10px; font-size: 16px; }
+    button { padding: 10px 20px; font-size: 16px; margin-top: 20px; cursor: pointer; }
+    #message { margin-top: 20px; }
+    .success { color: green; }
+    .failure { color: red; }
+  </style>
 </head>
 <body>
+  <h1>Password Guessing Game</h1>
+  <label for="difficulty">Select Difficulty:</label>
+  <select id="difficulty">
+    <option value="1">Easy</option>
+    <option value="2">Medium</option>
+    <option value="3">Hard</option>
+  </select>
 
-<div class="game-container">
-    <h2>Password Guessing Game</h2>
-    <p>Try to guess the alphanumeric password with symbols!</p>
-    <input type="text" id="guess" placeholder="Enter your guess" maxlength="12">
-    <button id="guessBtn" onclick="checkGuess()">Guess</button>
-    <p id="message" class="message"></p>
-    <p id="attempts" class="message"></p>
-</div>
+  <div id="game">
+    <input type="text" id="guess" placeholder="Enter your guess" autofocus>
+    <button onclick="checkGuess()">Guess</button>
+    <div id="message"></div>
+  </div>
 
-<script>
-    // Function to generate a random password with alphanumeric characters and symbols
-    function generatePassword() {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?';
-        let password = '';
-        for (let i = 0; i < 12; i++) {
-            password += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        return password;
-    }
-
-    // Set up initial variables
-    let password = generatePassword();
-    let attempts = 0;
-    const maxAttemptsBeforeReset = 3;
-
-    // Function to check the user's guess
-    function checkGuess() {
-        const userGuess = document.getElementById('guess').value;
-        const message = document.getElementById('message');
-        const attemptsDisplay = document.getElementById('attempts');
-        
-        if (userGuess === password) {
-            message.textContent = 'Congratulations! You guessed the password!';
-            message.className = 'message correct';
-            attemptsDisplay.textContent = '';
-            document.getElementById('guessBtn').disabled = true;
-        } else {
-            attempts++;
-            if (attempts >= maxAttemptsBeforeReset) {
-                password = generatePassword();  // Reset password
-                attempts = 0;  // Reset attempts counter
-                message.textContent = 'Incorrect guess! The password has been reset.';
-                message.className = 'message incorrect';
-                attemptsDisplay.textContent = `Attempts reset. The new password is ready to be guessed!`;
-            } else {
-                message.textContent = 'Incorrect guess. Try again.';
-                message.className = 'message incorrect';
-                attemptsDisplay.textContent = `Attempts left before reset: ${maxAttemptsBeforeReset - attempts}`;
-            }
-        }
-
-        document.getElementById('guess').value = ''; // Clear the input field
-        document.getElementById('guess').focus(); // Focus back to input
-    }
-</script>
-
+  <script src="game.js"></script>
 </body>
 </html>
+
