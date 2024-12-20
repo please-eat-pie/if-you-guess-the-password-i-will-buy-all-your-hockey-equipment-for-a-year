@@ -3,18 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Password Guessing Game</title>
+  <title>Matrix Wordle - Password Guessing Game</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-    input { padding: 10px; font-size: 16px; }
-    button { padding: 10px 20px; font-size: 16px; margin-top: 20px; cursor: pointer; }
-    #message { margin-top: 20px; }
-    .success { color: green; }
-    .failure { color: red; }
+    body {
+      background-color: black;
+      color: #00ff00;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      margin-top: 50px;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 30px;
+    }
+    select, input, button {
+      font-size: 1.2rem;
+      padding: 10px;
+      margin: 10px;
+      color: #000;
+    }
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(8, 50px);
+      grid-gap: 5px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .cell {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      border: 1px solid #00ff00;
+      background-color: black;
+    }
+    .correct {
+      background-color: green;
+      color: black;
+    }
+    .wrong-position {
+      background-color: yellow;
+      color: black;
+    }
+    .incorrect {
+      background-color: gray;
+      color: black;
+    }
+    #message {
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
-  <h1>Password Guessing Game</h1>
+  <h1>Matrix Wordle - Password Guessing Game</h1>
   <label for="difficulty">Select Difficulty:</label>
   <select id="difficulty">
     <option value="1">Easy</option>
@@ -23,12 +66,12 @@
   </select>
 
   <div id="game">
-    <input type="text" id="guess" placeholder="Enter your guess" autofocus>
+    <input type="text" id="guess" placeholder="Enter your guess (8 characters)" maxlength="8" autofocus>
     <button onclick="checkGuess()">Guess</button>
     <div id="message"></div>
+    <div class="game-board" id="game-board"></div>
   </div>
 
   <script src="game.js"></script>
 </body>
 </html>
-
