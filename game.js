@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     medium: { length: 6, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()' },
     hard: { length: 8, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-' },
     'very-hard': { length: 10, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-/.,:;<>?' },
-    insane: { length: 12, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-/.,:;<>?{}[]' }
+    insane: { length: 12, characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-/.,:;<>?{}[]' }
   };
 
   let password = '';
